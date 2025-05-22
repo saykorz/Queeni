@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Queeni"
+             xmlns:components="clr-namespace:Queeni.Components"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="Queeni.MainPage">
+    <ContentPage.Content>
+        <core:SfBusyIndicator x:Name="busyIndicator"
+                          IsRunning="{Binding IsBusy, Source={x:Static local:AppCache.BusyIndicator}}"
+                          Title="{Binding BusyMessage, Source={x:Static local:AppCache.BusyIndicator}}"
+                          AnimationType="DoubleCircle">
+            <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+        <BlazorWebView.RootComponents>
+                    <RootComponent Selector="#app" ComponentType="{x:Type components:Routes}" />
+        </BlazorWebView.RootComponents>
+    </BlazorWebView>
+        </core:SfBusyIndicator>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,23 @@
+﻿@page "/settings"
+@using Queeni.Components.Pages.ViewModels
+@inject NavigationManager Navigation
+@inject SettingViewModel ViewModel
+
+<h3>Settings</h3>
+<label style="color:red">@AppCache.Settings.Messages</label>
+<br />
+<label for="walletPrivateKeyInput">Wallet Private Key</label>
+<input id="walletPrivateKeyInput" @bind="AppCache.Settings.SecretKey" />
+<br />
+<label for="registerSigningKeyInput">Register Signing Key</label>
+<input id="registerSigningKeyInput" @bind="AppCache.Settings.RegisterSigningKey" />
+<br />
+<button @onclick="SubmitPrivateKey">Submit</button>
+
+@code {
+    private async Task SubmitPrivateKey()
+    {
+        await ViewModel.SetPrivateKey();
+        Navigation.NavigateTo("/");
+    }
+}

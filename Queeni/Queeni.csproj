@@ -1,0 +1,118 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup Label="Globals">
+      <SccProjectName>SAK</SccProjectName>
+      <SccProvider>SAK</SccProvider>
+      <SccAuxPath>SAK</SccAuxPath>
+      <SccLocalPath>SAK</SccLocalPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+		<TargetFrameworks>net9.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+        <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+        <!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+
+        <!-- Note for MacCatalyst:
+            The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
+            When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+            The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
+            either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
+        <!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Queeni</RootNamespace>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EnableDefaultCssItems>false</EnableDefaultCssItems>
+        <Nullable>enable</Nullable>
+
+        <!-- Display name -->
+        <ApplicationTitle>Queeni</ApplicationTitle>
+
+        <!-- App Identifier -->
+        <ApplicationId>Queeni</ApplicationId>
+
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
+
+        <!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
+        <WindowsPackageType>None</WindowsPackageType>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<Title>Queeni</Title>
+		<Authors>Dimitar Todorov ( Saykor )</Authors>
+		<Product>Queeni</Product>
+		<Description>Queeni AI Assistant</Description>
+		<PackageIcon>QueeniLogo.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- App Icon -->
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+        <!-- Splash Screen -->
+        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*" />
+        <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+
+        <!-- Custom Fonts -->
+        <MauiFont Include="Resources\Fonts\*" />
+
+        <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Components\Library\AI\ChatMessage.cs" />
+      <Compile Remove="Components\Library\AI\ChatMessageExtensions.cs" />
+      <Compile Remove="Components\Library\AI\OpenAIClient.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ably.io" Version="1.2.15" />
+        <PackageReference Include="AutoMapper" Version="14.0.0" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="Markdig" Version="0.41.1" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.70" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.70" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
+        <PackageReference Include="OpenAI" Version="2.1.0" />
+        <PackageReference Include="OpenAI-DotNet" Version="8.6.4" />
+        <PackageReference Include="Syncfusion.Blazor" Version="29.2.5" />
+        <PackageReference Include="Syncfusion.Blazor.Themes" Version="29.2.5" />
+        <PackageReference Include="Syncfusion.Maui.Core" Version="29.2.5" />
+        <PackageReference Include="System.Text.Json" Version="9.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\AutonomiNet\AutonomiNet.csproj" />
+      <ProjectReference Include="..\Queeni.Data\Queeni.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Resources\Splash\QueeniLogo.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+	<Target Name="RemoveUnusedSyncfusionThemes" AfterTargets="Publish">
+		<ItemGroup>
+			<FilesToRemove Include="$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/**" 
+						   Exclude="$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css;
+						            $(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css.gz;
+									$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css.br;" />
+			<FilesToRemove Include="$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/**" 
+						   Exclude="$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css;
+						            $(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css.gz;
+									$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css.br;" />
+		</ItemGroup>
+		<!-- Remove the files -->
+		<Delete Files="@(FilesToRemove)" />
+	</Target>
+</Project>

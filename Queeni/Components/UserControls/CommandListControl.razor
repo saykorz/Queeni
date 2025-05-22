@@ -1,0 +1,60 @@
+﻿@using Queeni.Components.Library.Extensions
+@using Queeni.Components.Models
+@using Queeni.Components.Pages.ViewModels
+
+@code {
+    private CommandDefinitionTypes? selectedType = null;
+    private string searchText = "";
+
+    private IEnumerable<CommandDefinitionModel> FilteredCommands =>
+        CommandExamples.All
+            .Where(cmd =>
+                (!selectedType.HasValue || cmd.Type == selectedType.Value) &&
+                (string.IsNullOrWhiteSpace(searchText) ||
+                 cmd.Command.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                 cmd.Example.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                 cmd.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+
+    private Dictionary<string, CommandDefinitionTypes?> TypeOptions = new()
+    {
+        { "All", null },
+        { "Task", CommandDefinitionTypes.Task },
+        { "Category", CommandDefinitionTypes.Category }
+    };
+}
+
+<div class="p-4">
+    <div class="flex gap-4 mb-4">
+        <input type="text" placeholder="Search..." class="p-2 border rounded w-1/2"
+               @bind="searchText" />
+
+        <select class="p-2 border rounded" @bind="selectedType">
+            @foreach (var kvp in TypeOptions)
+            {
+                <option value="@kvp.Value">@kvp.Key</option>
+            }
+        </select>
+    </div>
+
+    <table class="table-auto w-full border border-gray-300">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="px-4 py-2 border">Command</th>
+                <th class="px-4 py-2 border">Example</th>
+                <th class="px-4 py-2 border">Description</th>
+                <th class="px-4 py-2 border">Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cmd in FilteredCommands)
+            {
+                <tr>
+                    <td class="px-4 py-2 border">@cmd.Command</td>
+                    <td class="px-4 py-2 border italic">@cmd.Example</td>
+                    <td class="px-4 py-2 border">@cmd.Description</td>
+                    <td class="px-4 py-2 border font-semibold">@cmd.Type</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

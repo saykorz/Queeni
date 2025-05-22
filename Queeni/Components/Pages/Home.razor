@@ -1,0 +1,19 @@
+﻿@page "/"
+@using Queeni.Components.Pages.ViewModels
+@inject HomeViewModel ViewModel
+@inject NavigationManager Navigation
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ViewModel.LoadData();
+        if (result)
+        {
+            Navigation.NavigateTo("/dashboard");
+        }
+        else
+        {
+            Navigation.NavigateTo("/settings");
+        }
+    }
+}

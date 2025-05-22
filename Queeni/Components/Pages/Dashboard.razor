@@ -1,0 +1,371 @@
+﻿@page "/dashboard"
+@using System.Collections.ObjectModel;
+@using System.ComponentModel;
+@using System.ComponentModel.DataAnnotations
+@using Queeni.Components.Models
+@using Queeni.Components.Pages.ViewModels
+@using Queeni.Components.ViewModels
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DataForm
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.InteractiveChat
+@using Syncfusion.Blazor.Kanban
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Notifications
+@inject DashboardViewModel ViewModel
+
+<div class="col-lg-12 control-section">
+    <div class="content-wrapper" id="toast-kanban-observable">
+        <div class="row">
+            <div class="btn">
+                @* @if (ViewModel.DataFiles.Any())
+                {
+                    <SfDropDownList TValue="string" TItem="DataFile" DataSource="@ViewModel.DataFiles" Width="300px" Value="@ViewModel.SelectedDisplayDate" >
+                        <DropDownListFieldSettings Value="DisplayDate"></DropDownListFieldSettings>
+                        <DropDownListEvents TValue="string" TItem="DataFile" ValueChange="@ViewModel.OnValueChange"></DropDownListEvents>
+                    </SfDropDownList>
+                } *@
+                @if (ViewModel.Items.Any())
+                {
+                    <SfButton OnClick="@ViewModel.SaveChanges" style="margin: 0 0 7px 7px">Save Changes</SfButton>
+                }
+                <div class="btn" style="text-align: left">
+                    <SfButton OnClick="@ViewModel.AddCategory" style="margin: 0 0 7px 7px">Add Category</SfButton>
+                    @if (ViewModel.Categories.Any())
+                    {
+                        <SfButton OnClick="@ViewModel.AddTask" style="margin: 0 0 7px 7px">Add Task</SfButton>
+                    }
+                </div>
+            </div>
+            <SfKanban @ref="ViewModel.KanbanControl" KeyField="BindValue" DataSource="@ViewModel.Items">
+                <KanbanColumns>
+                    @foreach (ColumnModel item in ViewModel.Columns)
+                    {
+                        <KanbanColumn HeaderText="@item.HeaderText" KeyField="@item.KeyField" AllowToggle="@item.AllowToggle">
+                            <Template>
+                                @{
+                                    KanbanColumn column = (KanbanColumn)context;
+                                    <div class="header-template-wrap">
+                                        <div class="header-icon e-icons @column.KeyField[0]"></div>
+                                        <div class="header-text">@column.HeaderText</div>
+                                    </div>
+                                }
+                            </Template>
+                        </KanbanColumn>
+                    }
+                </KanbanColumns>
+                <KanbanCardSettings HeaderField="Title" ContentField="Description" GrabberField="Priority" TagsField="BindTags"></KanbanCardSettings>
+                <KanbanDialogSettings>
+                    <Template>
+                        @{
+                            var data = (TaskViewModel)context;
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="e-label">Title</td>
+                                        <td>
+                                            <SfTextBox CssClass="e-field" @bind-Value="@data.Title"></SfTextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="e-label">Status</td>
+                                        <td>
+                                            <SfDropDownList TValue="int" TItem="CategoryViewModel" CssClass="e-field" DataSource="@ViewModel.Categories" @bind-Value="@data.CategoryId">
+                                                <DropDownListFieldSettings Text="Title" Value="Id"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="e-label">Description</td>
+                                        <td>
+                                            <SfTextBox CssClass="e-field" Multiline="true" @bind-Value="@data.Description"></SfTextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="e-label">Priority</td>
+                                        <td>
+                                            <SfDropDownList TValue="string" TItem="string" CssClass="e-field" DataSource="@ViewModel.Colors" @bind-Value="@data.Priority">
+                                                <DropDownListFieldSettings></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="e-label">Tags</td>
+                                        <td>
+                                            <SfTextBox CssClass="e-field" @bind-Value="@data.CardTags"></SfTextBox>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                    </Template>
+                </KanbanDialogSettings>
+                <KanbanEvents TValue="TaskViewModel"
+                              ActionComplete="@ViewModel.ActionCompleteHandler">
+                </KanbanEvents>
+            </SfKanban>
+            <SfToast @ref="ToastObj" ID="toast_type" Content="@ToastContent" Timeout=2000 Target="@ToastTarget">
+                <ToastPosition X="Right" Y="Top" />
+            </SfToast>
+        </div>
+    </div>
+    <div class="aiassist-toggle-button" title="Your Highness – Queeni, AI Queen of Tasks!" @onclick="@ViewModel.ToggleAIAssistant">
+        <img src="Images/logoBig2.png" alt="Queeni Icon" class="queeni-logo" />
+    </div>
+
+    @if (ViewModel.ShowAIAssistant)
+    {
+        <div class="aiassist-container">
+            <SfAIAssistView PromptRequested="@ViewModel.PromptRequest">
+                <AssistViews>
+                    <AssistView>
+                        <BannerTemplate>
+                            <div class="banner-content">
+                                <img src="Images/logoBig2.png" alt="Queeni Logo" class="assistview-icon" />
+                                <h3>Her Majesty Queeni</h3>
+                                <div>The all-knowing Autonomi Queen</div>
+                            </div>
+                        </BannerTemplate>
+                        <ResponseItemTemplate>
+                            <div class="responseItemContent">
+                                <div class="response-header">
+                                    <span class="e-assistview-icon2"></span>
+                                    Queeni
+                                </div>
+                                <div class="responseContent">@((MarkupString)context.Response)</div>
+                            </div>
+                        </ResponseItemTemplate>
+                    </AssistView>
+                    <CustomView Header="Commands">
+                        <ViewTemplate>
+                            <div class="view-container">
+                                <Queeni.Components.UserControls.CommandListControl></Queeni.Components.UserControls.CommandListControl>
+                            </div>
+                        </ViewTemplate>
+                    </CustomView>
+                </AssistViews>
+            </SfAIAssistView>
+        </div>
+    }
+</div>
+<div id="DialogTarget">
+    <SfDialog Width="300px" MinHeight="280px" IsModal="true" ShowCloseIcon="true" @bind-Visible="@ViewModel.IsOpen">
+        <DialogTemplates>
+            <Header> Add new column </Header>
+            <Content>
+                <div>
+                    <SfDataForm ID="MyForm" Model="@ViewModel.SelectedCategory" LabelPosition="FormLabelPosition.Left">
+                        <FormItems>
+                            <FormAutoGenerateItems />
+                        </FormItems>
+                        <FormButtons>
+                        </FormButtons>
+                    </SfDataForm>
+                </div>
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="Add" IsPrimary="true" OnClick="@ViewModel.SaveCategory" />
+            <DialogButton Content="Cancel" IsPrimary="false" OnClick="@ViewModel.CancelSaveCategory" />
+        </DialogButtons>
+    </SfDialog>
+</div>
+
+<style type="text/css">
+    .e-assistview-icon2 {
+        display: inline-block; /* или block */
+        width: 24px;
+        height: 24px;
+        background-image: url('Images/logoBig2.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        vertical-align: middle; /* за подравняване с текста */
+    }
+
+    .queeni-logo {
+        width: 80px;
+        height: 80px;
+        transition: transform 0.6s ease-in-out;
+        cursor: pointer;
+    }
+
+        .queeni-logo:hover {
+            transform: rotate(360deg);
+        }
+
+    .assistview-icon {
+        width: 80px;
+        height: 80px;
+        margin-right: 10px;
+    }
+
+    .aiassist-container .e-view-container {
+        margin: auto;
+    }
+
+    .aiassist-container .e-banner-view {
+        margin-left: 0;
+    }
+
+    .banner-content .e-assistview-icon:before {
+        font-size: 35px;
+    }
+
+    .banner-content {
+        text-align: center;
+    }
+
+    .aiassist-toggle-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #3f51b5;
+        color: white;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        cursor: pointer;
+        z-index: 10000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+    }
+
+        .aiassist-toggle-button:hover {
+            background-color: #303f9f;
+        }
+
+    .aiassist-container {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        z-index: 9999;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px;
+        width: 650px;
+        height: 350px;
+        /* Responsive fallback */
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow: auto;
+    }
+
+    .e-card-tag {
+        background-color: #e0f7fa !important;
+        color: #006064 !important;
+        padding: 2px 4px !important;
+        margin-top: 2px !important;
+        border-radius: 2px !important;
+        font-size: 8px !important;
+    }
+
+    .tailwind-dark .e-kanban .e-kanban-header .e-header-cells .e-item-count,
+    .tailwind .e-kanban .e-kanban-header .e-header-cells .e-item-count,
+    .tailwind3-dark .e-kanban .e-kanban-header .e-header-cells .e-item-count,
+    .tailwind3 .e-kanban .e-kanban-header .e-header-cells .e-item-count,
+    .bootstrap5-dark .e-kanban .e-kanban-header .e-header-cells .e-item-count,
+    .bootstrap5 .e-kanban .e-kanban-header .e-header-cells .e-item-count {
+        margin-top: 3px;
+    }
+
+    .e-kanban .e-kanban-content {
+        min-height: 514px;
+    }
+
+    .e-kanban .header-template-wrap {
+        display: inline-flex;
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+        .e-kanban .header-template-wrap .header-icon {
+            font-family: 'Kanban priority icons';
+            margin-top: 3px;
+            width: 10%;
+        }
+
+        .e-kanban .header-template-wrap .header-text {
+            margin-left: 15px;
+        }
+
+    .e-kanban.e-rtl .header-template-wrap .header-text {
+        margin-right: 15px;
+    }
+
+    .e-kanban .card-header {
+        padding-left: 12px;
+    }
+
+    .e-kanban .Open::before {
+        content: '\e700';
+        color: #0251cc;
+        font-size: 16px;
+    }
+
+    .e-kanban .In.Progress::before {
+        content: '\e703';
+        color: #ea9713;
+        font-size: 16px;
+    }
+
+    .e-kanban .Review::before {
+        content: '\e701';
+        color: #8e4399;
+        font-size: 16px;
+    }
+
+    .e-kanban .Close::before {
+        content: '\e702';
+        color: #63ba3c;
+        font-size: 16px;
+    }
+
+    [class^="sf-icon-"],
+    [class*=" sf-icon-"] {
+        font-family: 'Kanban priority icons' !important;
+        speak: none;
+        font-size: 55px;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+</style>
+@code {
+    private bool isLoading = true;
+
+    private SfToast ToastObj;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ViewModel.LoadData(true);
+        this.StateHasChanged();
+        isLoading = !result;
+
+        ViewModel.Columns.CollectionChanged += (s, e) =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+
+        // ViewModel.Items.CollectionChanged += (s, e) =>
+        // {
+        //     InvokeAsync(StateHasChanged);
+        // };
+    }
+
+    private string ToastContent { get; set; }
+    private int AddUniqueId { get; set; }
+    private int UpdateUniqueId { get; set; }
+    private string ToastTarget { get; set; } = "#toast-kanban-observable";
+}
