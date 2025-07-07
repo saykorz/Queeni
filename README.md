@@ -1,3 +1,39 @@
+## Prerequisites
+
+Before running **Queeni**, ensure your system meets these requirements:
+
+### 1. .NET 9.0.6 Runtime
+- **Required** for application execution
+- If not installed, Queeni will automatically prompt with download link on launch  
+  [Download .NET 9.0.6](https://dotnet.microsoft.com/download/dotnet/9.0)
+
+### 2. Microsoft Visual C++ Redistributable (2015-2019)
+- Required for Windows compatibility
+- If you see error:  
+  `"The code execution cannot proceed because VCRUNTIME140.dll was not found"`  
+  **Solution**: Install from official Microsoft site:  
+  [Download vc_redist.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)
+
+---
+
+## First-Time Setup
+
+### Initial Launch
+Configuration
+  On first run, you'll see the **Settings** screen where you must:
+   - ✅ **Enter your Wallet Key** (required)
+   - ⚙️ *(Optional)* Add **OpenAI API Key** for AI features  
+     *(App works fully without AI key, just without AI functionality)*
+
+### Adding OpenAI API Key (Optional)
+If you want AI features:
+1. Create account at [OpenAI Platform](https://platform.openai.com)
+2. Generate API key (starts with `sk-`)
+3. Paste in Queeni's settings
+4. AI features will activate immediately
+
+---
+
 # Queeni 
 Youtube presentation: [https://www.youtube.com/watch?v=r9GTiWV3YRo](https://www.youtube.com/watch?v=tzZqyx3af44)
 
