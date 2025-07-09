@@ -24,6 +24,7 @@ Configuration
    - ✅ **Enter your Wallet Key** (required)
    - ⚙️ *(Optional)* Add **OpenAI API Key** for AI features  
      *(App works fully without AI key, just without AI functionality)*
+     🔹 **Note:** AI features require purchased tokens from OpenAI - your API key must have active credit balance to work
 
 ### Adding OpenAI API Key (Optional)
 If you want AI features:
