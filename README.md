@@ -13,7 +13,8 @@ Before running **Queeni**, ensure your system meets these requirements:
   `"The code execution cannot proceed because VCRUNTIME140.dll was not found"`  
   **Solution**: Install from official Microsoft site:  
   [Download vc_redist.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)
-
+### 3. Update ant.exe  :
+- You need to use ant.exe from version 2025.7.1.5.autonomi.x86_64-pc-windows-msvc. Override current file in the program folder.
 ---
 
 ## First-Time Setup
