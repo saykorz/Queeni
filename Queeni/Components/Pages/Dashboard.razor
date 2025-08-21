@@ -12,32 +12,38 @@
 @using Syncfusion.Blazor.Inputs
 @using Syncfusion.Blazor.InteractiveChat
 @using Syncfusion.Blazor.Kanban
+@using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Notifications
+@inject NavigationManager Navigation
 @inject DashboardViewModel ViewModel
 
 <div class="col-lg-12 control-section">
     <div class="content-wrapper" id="toast-kanban-observable">
         <div class="row">
-            <div class="btn">
-                @* @if (ViewModel.DataFiles.Any())
-                {
-                    <SfDropDownList TValue="string" TItem="DataFile" DataSource="@ViewModel.DataFiles" Width="300px" Value="@ViewModel.SelectedDisplayDate" >
-                        <DropDownListFieldSettings Value="DisplayDate"></DropDownListFieldSettings>
-                        <DropDownListEvents TValue="string" TItem="DataFile" ValueChange="@ViewModel.OnValueChange"></DropDownListEvents>
-                    </SfDropDownList>
-                } *@
+            <div class="dashboard-actions">
                 @if (ViewModel.Items.Any())
                 {
-                    <SfButton OnClick="@ViewModel.SaveChanges" style="margin: 0 0 7px 7px">Save Changes</SfButton>
+                    <button class="btn btn-primary" @onclick="@ViewModel.SaveChanges">
+                        <span class="btn-icon">💾</span>
+                        Save Changes
+                    </button>
                 }
-                <div class="btn" style="text-align: left">
-                    <SfButton OnClick="@ViewModel.AddCategory" style="margin: 0 0 7px 7px">Add Category</SfButton>
-                    @if (ViewModel.Categories.Any())
-                    {
-                        <SfButton OnClick="@ViewModel.AddTask" style="margin: 0 0 7px 7px">Add Task</SfButton>
-                    }
-                </div>
+                <button class="btn btn-primary" @onclick="@ViewModel.AddCategory">
+                    <span class="btn-icon">➕</span>
+                    Add Category
+                </button>
+                @if (ViewModel.Categories.Any())
+                {
+                    <button class="btn btn-primary" @onclick="@ViewModel.AddTask">
+                        <span class="btn-icon">📝</span>
+                        Add Task
+                    </button>
+                }
+                <button class="btn btn-secondary" @onclick="@(() => Navigation.NavigateTo("/settings"))">
+                    <span class="btn-icon">⚙️</span>
+                    Settings
+                </button>
             </div>
             <SfKanban @ref="ViewModel.KanbanControl" KeyField="BindValue" DataSource="@ViewModel.Items">
                 <KanbanColumns>
@@ -138,13 +144,10 @@
                             </div>
                         </ResponseItemTemplate>
                     </AssistView>
-                    <CustomView Header="Commands">
-                        <ViewTemplate>
-                            <div class="view-container">
-                                <Queeni.Components.UserControls.CommandListControl></Queeni.Components.UserControls.CommandListControl>
-                            </div>
-                        </ViewTemplate>
-                    </CustomView>
+                    <AssistViewToolbar ItemClicked="ToolbarItemClicked">
+                        <AssistViewToolbarItem Type="ItemType.Spacer"></AssistViewToolbarItem>
+                        <AssistViewToolbarItem Type="ItemType.Button" IconCss="e-icons e-user"></AssistViewToolbarItem>
+                    </AssistViewToolbar>
                 </AssistViews>
             </SfAIAssistView>
         </div>
@@ -341,6 +344,48 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
+    .dashboard-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #545b62;
+        transform: translateY(-1px);
+    }
+
+    .btn-icon {
+        font-size: 1.1em;
+    }
 </style>
 @code {
     private bool isLoading = true;
@@ -362,6 +407,16 @@
         // {
         //     InvokeAsync(StateHasChanged);
         // };
+    }
+
+    public void ToolbarItemClicked(AssistViewToolbarItemClickedEventArgs args)
+    {
+        if (args.Item != null &&
+            args.Item.Type == Syncfusion.Blazor.Navigations.ItemType.Button &&
+            args.Item.IconCss == "e-icons e-user")
+        {
+            Navigation.NavigateTo("/settings");
+        }
     }
 
     private string ToastContent { get; set; }

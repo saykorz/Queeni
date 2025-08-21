@@ -3,21 +3,168 @@
 @inject NavigationManager Navigation
 @inject SettingViewModel ViewModel
 
-<h3>Settings</h3>
-<label style="color:red">@AppCache.Settings.Messages</label>
-<br />
-<label for="walletPrivateKeyInput">Wallet Private Key</label>
-<input id="walletPrivateKeyInput" @bind="AppCache.Settings.SecretKey" />
-<br />
-<label for="registerSigningKeyInput">Register Signing Key</label>
-<input id="registerSigningKeyInput" @bind="AppCache.Settings.RegisterSigningKey" />
-<br />
-<button @onclick="SubmitPrivateKey">Submit</button>
+<div class="settings-container">
+    <h3>Settings</h3>
+    
+    @if (!string.IsNullOrEmpty(AppCache.Settings.Messages))
+    {
+        <div class="alert alert-danger">
+            @AppCache.Settings.Messages
+        </div>
+    }
+
+    <div class="settings-grid">
+        <div class="form-group">
+            <label for="walletPrivateKeyInput">Wallet Private Key <span class="required">*</span></label>
+            <div class="input-field">
+                <input id="walletPrivateKeyInput" 
+                       @bind="AppCache.Settings.SecretKey" 
+                       class="form-control" 
+                       required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="registerSigningKeyInput">Scratchpad Signing Key</label>
+            <div class="input-field">
+                <input id="registerSigningKeyInput" 
+                       @bind="AppCache.Settings.ScratchpadSigningKey" 
+                       class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="openAiApiKeyInput">OpenAI API Key</label>
+            <div class="input-field">
+                <input id="openAiApiKeyInput" 
+                       @bind="AppCache.Settings.OpenAiApiKey" 
+                       class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="isLiveInput">Use Live Network</label>
+            <div class="input-field checkbox-field">
+                <input type="checkbox" 
+                       id="isLiveInput" 
+                       @bind="AppCache.Settings.IsLive"
+                       class="form-check-input" />
+                <span class="network-status @(AppCache.Settings.IsLive ? "live" : "test")">
+                    @(AppCache.Settings.IsLive ? "Live Network" : "Test Network")
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group button-group">
+            <button class="btn btn-primary" @onclick="SubmitPrivateKey">Save Settings</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .settings-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+    }
+
+    .settings-grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .button-group {
+        grid-template-columns: 200px auto;
+        margin-top: 1rem;
+    }
+
+    .input-field {
+        width: 100%;
+    }
+
+    .checkbox-field {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .network-status {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    .network-status.live {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .network-status.test {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .form-check-input {
+        width: 1.2rem;
+        height: 1.2rem;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .required {
+        color: red;
+        margin-left: 4px;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+    }
+
+    .alert-danger {
+        background-color: #ffe6e6;
+        border: 1px solid #ffcccc;
+        color: #cc0000;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
 
 @code {
     private async Task SubmitPrivateKey()
     {
         await ViewModel.SetPrivateKey();
+        AutonomiNet.Client.IsLive = AppCache.Settings.IsLive;
         Navigation.NavigateTo("/");
     }
 }

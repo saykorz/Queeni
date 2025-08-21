@@ -26,7 +26,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <Nullable>enable</Nullable>
-
+		<EnablePreviewFeatures>true</EnablePreviewFeatures>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
+		
         <!-- Display name -->
         <ApplicationTitle>Queeni</ApplicationTitle>
 
@@ -48,8 +50,20 @@
 		<Product>Queeni</Product>
 		<Description>Queeni AI Assistant</Description>
 		<PackageIcon>QueeniLogo.png</PackageIcon>
+		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<PackageCertificateThumbprint>A8963FF026AF80EB2ACB7637F892E2CC7E1B8AE8</PackageCertificateThumbprint>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     </PropertyGroup>
 
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
+		<RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>
+	</PropertyGroup>
+	
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -78,21 +92,37 @@
         <PackageReference Include="ably.io" Version="1.2.15" />
         <PackageReference Include="AutoMapper" Version="14.0.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="Markdig" Version="0.41.1" />
-        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.70" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.70" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
-        <PackageReference Include="OpenAI" Version="2.1.0" />
-        <PackageReference Include="OpenAI-DotNet" Version="8.6.4" />
-        <PackageReference Include="Syncfusion.Blazor" Version="29.2.5" />
-        <PackageReference Include="Syncfusion.Blazor.Themes" Version="29.2.5" />
-        <PackageReference Include="Syncfusion.Maui.Core" Version="29.2.5" />
-        <PackageReference Include="System.Text.Json" Version="9.0.5" />
+        <PackageReference Include="Markdig" Version="0.41.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.81" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.81" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
+        <PackageReference Include="OpenAI" Version="2.2.0" />
+        <PackageReference Include="OpenAI-DotNet" Version="8.8.1" />
+        <PackageReference Include="Syncfusion.Blazor" Version="30.1.38" />
+        <PackageReference Include="Syncfusion.Blazor.Themes" Version="30.1.38" />
+        <PackageReference Include="System.Text.Json" Version="9.0.6" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\AutonomiNet\AutonomiNet.csproj" />
       <ProjectReference Include="..\Queeni.Data\Queeni.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Licenses.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Licenses.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Licenses.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Licenses.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -103,14 +133,8 @@
     </ItemGroup>
 	<Target Name="RemoveUnusedSyncfusionThemes" AfterTargets="Publish">
 		<ItemGroup>
-			<FilesToRemove Include="$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/**" 
-						   Exclude="$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css;
-						            $(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css.gz;
-									$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css.br;" />
-			<FilesToRemove Include="$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/**" 
-						   Exclude="$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css;
-						            $(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css.gz;
-									$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css.br;" />
+			<FilesToRemove Include="$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/**" Exclude="$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css;&#xD;&#xA;						            $(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css.gz;&#xD;&#xA;									$(PublishDir)wwwroot/_content/Syncfusion.Blazor.Themes/bootstrap5.css.br;" />
+			<FilesToRemove Include="$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/**" Exclude="$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css;&#xD;&#xA;						            $(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css.gz;&#xD;&#xA;									$(PublishDir)wwwroot/_content/Syncfusion.Blazor/styles/bootstrap5.css.br;" />
 		</ItemGroup>
 		<!-- Remove the files -->
 		<Delete Files="@(FilesToRemove)" />

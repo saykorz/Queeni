@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using Syncfusion.Blazor;
-using Syncfusion.Maui.Core.Hosting;
 using Queeni.Components.Pages.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Queeni
 {
@@ -21,7 +21,6 @@ namespace Queeni
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureSyncfusionCore()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -61,13 +60,16 @@ namespace Queeni
 #endif
 
             //Register Syncfusion license
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("");
+            var licenseKey = Licenses.SyncfusionLicense;
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
+            // Update the AddAutoMapper call to use the correct overload
             builder.Services.AddAutoMapper(cfg =>
             {
                 cfg.AllowNullCollections = true;
                 cfg.AllowNullDestinationValues = true;
-            }, typeof(MappingProfile).Assembly);
+            }, new[] { typeof(MappingProfile).Assembly });
+            
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite($"Filename={ApplicationDbContextFactory.GetFullDatabasePath()}",
@@ -76,6 +78,7 @@ namespace Queeni
             builder.Services.AddScoped<IUowData, UowData>();
             builder.Services.AddSingleton<IRealtimeSyncService, RealtimeSyncService>();
             builder.Services.AddSingleton<IOpenAIConversation, OpenAIConversation>();
+            builder.Services.AddScoped<BusyIndicatorService>();
             builder.Services.AddScoped<HomeViewModel>();
             builder.Services.AddScoped<SettingViewModel>();
             builder.Services.AddScoped<DashboardViewModel>();

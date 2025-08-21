@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Queeni.Data.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,11 @@ namespace Queeni.Data
         public static string GetFullDatabasePath()
         {
             return Path.Combine(GetDatabaseDirectoryPath(), GetDatabaseFileName());
+        }
+
+        public static string GetWorkingDatabasePath()
+        {
+            return Path.Combine(ApplicationDbContextFactory.GetDatabaseDirectoryPath(), $"{ShortGuid.NewGuid()}-{QueeniConfigManager.DefaultDbFileName}");
         }
 
         public static string GetDatabaseDirectoryPath()

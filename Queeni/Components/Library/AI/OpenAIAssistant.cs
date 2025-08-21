@@ -6,7 +6,6 @@ using Queeni.Data.Models;
 using IO.Ably;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Syncfusion.Maui.Core.Carousel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +58,7 @@ namespace Queeni.Components.Library.AI
             {
                 var requestBody = new
                 {
-                    model = "gpt-4.1-mini-2025-04-14",//"gpt-4o-mini-2024-07-18",
+                    model = "gpt-5-nano-2025-08-07",//"gpt-4o-mini-2024-07-18",
                     // 
                     temperature = 0.8,
                     input = _conversation.Messages,

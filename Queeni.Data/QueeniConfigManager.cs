@@ -15,9 +15,9 @@ namespace Queeni.Data
 
         private static readonly string ConfigPath = Path.Combine(AppPath, "queeni-config.json");
 
-        public static readonly string RegisterSigningKeyPath = Path.Combine(
+        public static readonly string ScratchpadSigningKeyPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "autonomi", "client", "register_signing_key");
+            "autonomi", "client", "scratchpad_signing_key");
 
         public static async Task<QueeniConfigModel> LoadAsync()
         {

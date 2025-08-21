@@ -1,0 +1,38 @@
+﻿@using Queeni.Components.Library.Services
+@using Syncfusion.Blazor.Spinner 
+@inject BusyIndicatorService BusyIndicator
+
+@if (BusyIndicator.IsBusy)
+{
+    <div class="busy-overlay"></div>
+}
+<SfSpinner @bind-Visible="@BusyIndicator.IsBusy" Label="@BusyIndicator.BusyMessage" CssClass="busy-spinner"></SfSpinner>
+
+@code {
+    protected override void OnInitialized()
+    {
+        BusyIndicator.OnStateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        BusyIndicator.OnStateChanged -= StateHasChanged;
+    }
+}
+
+<style>
+.busy-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.2); /* лека сянка */
+    z-index: 9998;
+    pointer-events: all;
+}
+
+.busy-spinner {
+    z-index: 9999 !important;
+}
+</style>

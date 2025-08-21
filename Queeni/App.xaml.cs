@@ -1,4 +1,5 @@
 ﻿using Queeni.Components.Library.Extensions;
+using Queeni.Components.Library.Services;
 using Queeni.Data;
 using Queeni.Data.Interfaces;
 
@@ -50,17 +51,17 @@ namespace Queeni
             return window;
         }
 
-        public static async Task SaveChanges()
+        public static async Task SaveChanges(BusyIndicatorService busyIndicator)
         {
             var uow = AppCache.Services.GetRequiredService<IUowData>();
             uow.Dispose();
 
-            var result = await AppCache.BusyIndicator.RunAsync(async () => {
-                var fullNewDbPath = Path.Combine(ApplicationDbContextFactory.GetDatabaseDirectoryPath(), $"{ShortGuid.NewGuid()}-{QueeniConfigManager.AppPath}");
+            var result = await busyIndicator.RunAsync(async () => {
+                var fullNewDbPath = ApplicationDbContextFactory.GetWorkingDatabasePath();
                 File.Move(ApplicationDbContextFactory.GetFullDatabasePath(), fullNewDbPath, true);
 
-                AppCache.DatabaseAddress = await AutonomiNet.File.Upload(ApplicationDbContextFactory.GetFullDatabasePath(), true);
-                var result = await AutonomiNet.Register.Edit(QueeniConfigManager.DefaultDbFileName, AppCache.DatabaseAddress);
+                AppCache.DatabaseAddress = await AutonomiNet.File.Upload(ApplicationDbContextFactory.GetFullDatabasePath());
+                var result = await AutonomiNet.Scratchpad.Edit(QueeniConfigManager.DefaultDbFileName, AppCache.DatabaseAddress);
                 var vault = await AutonomiNet.Vault.Sync();
                 return result;
             }, "Saving data...");
