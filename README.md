@@ -21,7 +21,8 @@ Before running **Queeni**, ensure your system meets these requirements:
   **Solution**: Install from official Microsoft site:  
   [Download vc_redist.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 ### 3. Update ant.exe  :
-- You need to use ant.exe from version 2025.7.1.5.autonomi.x86_64-pc-windows-msvc. Override current file in the program folder.
+- You need to use ant.exe to version 2025.7.1.5.autonomi.x86_64-pc-windows-msvc. Override current file in the program folder.
+- Download it from official release page: https://github.com/maidsafe/autonomi/releases/tag/stable-2025.7.1.5
 ---
 
 ## First-Time Setup
