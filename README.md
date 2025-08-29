@@ -1,3 +1,9 @@
+## Download
+1. GO to url: https://github.com/saykorz/Queeni/releases/tag/20250708
+2. Scroll bellow.
+3. Download the archive Queeni20250708.7z
+4. Unarchive it. You need 7-Zip app to do this from: https://www.7-zip.org/download.html
+   
 ## Prerequisites
 
 Before running **Queeni**, ensure your system meets these requirements:
