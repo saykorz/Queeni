@@ -3,6 +3,7 @@
 2. Scroll bellow.
 3. Download the archive Queeni20250708.7z
 4. Unarchive it. You need 7-Zip app to do this from: https://www.7-zip.org/download.html
+5. click Queeni.exe like any Windows program 
    
 ## Prerequisites
 
